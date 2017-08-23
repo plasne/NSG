@@ -31,7 +31,7 @@ The following parameters are optional:
 * CopyFromNSG
 * AllowRegion
 
-If you specify CopyFromResourceGroup only it will copy all the Rules from all NSGs in the specified Resource Group. You need to make sure there are not Rules with the priority.
+If you specify CopyFromResourceGroup only it will copy all the Rules from all NSGs in the specified Resource Group. You need to make sure that all the Rules have a different priority. Also, Rules pulled using AllowRegion start at 2000 and go up one at a time (2000, 2001, 2002, ...), so you should avoid that range as well.
 
 If you specify CopyFromNSG and CopyFromResourceGroup (it won't do anything on its own), it will copy all the Rules from the specified NSG.
 
@@ -47,3 +47,11 @@ To run in Azure Automation, you must add AzureRM.Network module. This has depend
 
 * Under the Azure Automation Account, go to Modules, click on "Update Azure Modules".
 * When that is done, under Modules Gallery, search for "AzureRM.Network" and Import it.
+
+# Using with HDInsight
+
+If you are going to use this with HDInsight you must allow a specific set of IP addresses for inbound (outbound filtering isn't supported with HDI). Those IP addresses vary per region, but you can find what you need here:
+
+https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-extend-hadoop-virtual-network#hdinsight-ip
+
+You can implement this simply by creating a NSG with the Rules and then using CopyFromResourceGroup.
