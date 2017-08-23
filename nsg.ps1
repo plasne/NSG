@@ -1,18 +1,11 @@
 <#
     .DESCRIPTION
-        An example runbook which gets all the ARM resources using the Run As Account (Service Principal)
-        Basically the script generates a new NSG contain a aggregate of Onpremise rules and Azure platform rules. 
-        To do this uses a “source” NSG. This is managed by a network team and should contain all customer on-premise rules. 
-        The second set of rules are generated from the downloaded xml file.
-        These two set of rules are combined in a newly created NSG is then attached to the specified network subnet. 
-        
-        I took this approach as it allows a certain amount of flexibility.
-        and additionally it is extremely performant compared to iterating through a list of rules in a existing NSG (powershell loops are slow). It also ensures there is no down time of rules as the very last step is to switch the subnet to the new NSG rule set(it also keeps a history of previous rules that you can roll back to. Much like a promotion mechanism). 
-        
+        This PowerShell cmdlet lets you copy rules from one or more NSGs into a new NSG
+        and/or apply all rules from a specific region in the Azure IP Address Ranges
+        (https://www.microsoft.com/en-us/download/details.aspx?id=41653).
+       
     .NOTES
-        AUTHOR : Azure Automation Team
-        CREATED: Mar 14, 2016
-        EDITOR : Peter Lasne, Commercial Software Engineering, Microsoft
+        AUTHOR : Peter Lasne, Commercial Software Engineering, Microsoft
         EDITED : Aug 23, 2017
 #>
 
