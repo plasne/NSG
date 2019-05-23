@@ -12,14 +12,16 @@
 Param
 (
     [Parameter (Mandatory= $true)]  [String] $SubscriptionId,
-    [Parameter (Mandatory= $true)]  [String] $Location,              ## region containing the source NSG and VNET
-    [Parameter (Mandatory= $true)]  [String] $ResourceGroup,         ## name of the Resource Group containing the VNET
+    [Parameter (Mandatory= $true)]  [String] $Location,              # region containing the source NSG and VNET
+    [Parameter (Mandatory= $true)]  [String] $ResourceGroup,         # name of the Resource Group containing the VNET
     [Parameter (Mandatory= $true)]  [String] $VNET,
     [Parameter (Mandatory= $true)]  [String] $Subnet,
-    [Parameter (Mandatory= $false)] [String] $CopyFromResourceGroup, ## name of the Resource Group containing a Resource Group with one or more NSGs
-    [Parameter (Mandatory= $false)] [String] $CopyFromNSG,           ## if specified and used with CopyFromResourceGroup, it will restrict which NSG it copies from
-    [Parameter (Mandatory= $false)] [String] $AllowRegion,           ## the region to allow inbound traffic from
-    [Parameter (Mandatory= $false)] [Switch] $IsInteractive          ## set to $true if running from a command prompt instead of Azure Automation
+    [Parameter (Mandatory= $false)] [String] $Protocol = "*",        # ex. TCP, UDP, *
+    [Parameter (Mandatory= $false)] [String] $Ports = "*",           # destination ports, ex. 80, 443, 22-23
+    [Parameter (Mandatory= $false)] [String] $CopyFromResourceGroup, # name of the Resource Group containing a Resource Group with one or more NSGs
+    [Parameter (Mandatory= $false)] [String] $CopyFromNSG,           # if specified and used with CopyFromResourceGroup, it will restrict which NSG it copies from
+    [Parameter (Mandatory= $false)] [String] $AllowRegion,           # the region to allow inbound traffic from
+    [Parameter (Mandatory= $false)] [Switch] $IsInteractive          # set to $true if running from a command prompt instead of Azure Automation
 )
 
 # initialize variables
@@ -114,13 +116,13 @@ if ($AllowRegion) {
                 -Name $name `
                 -Description "Allow inbound from Azure $cidr" `
                 -Access Allow `
-                -Protocol * `
+                -Protocol $Protocol `
                 -Direction Inbound `
                 -Priority $priority `
                 -SourceAddressPrefix $cidr `
                 -SourcePortRange * `
                 -DestinationAddressPrefix VirtualNetwork `
-                -DestinationPortRange *;
+                -DestinationPortRange $Ports;
 
             # increment the priority
             $priority++;
